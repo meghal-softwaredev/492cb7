@@ -10,10 +10,12 @@ export const addMessageToStore = (state, payload) => {
     newConvo.latestMessageText = message.text;
     return [newConvo, ...state];
   }
-
+  // convert from mutable to immutable state to add message
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
-      convo.messages.push(message);
+      console.log("state", state,"convo", convo)
+      const convoCopy = { ...convo };
+      convo.messages = [...convoCopy.messages, message];
       convo.latestMessageText = message.text;
       return convo;
     } else {
@@ -65,14 +67,15 @@ export const addSearchedUsersToStore = (state, users) => {
 
   return newState;
 };
-
+// convert from mutable to immutable state to add new conversation
 export const addNewConvoToStore = (state, recipientId, message) => {
   return state.map((convo) => {
     if (convo.otherUser.id === recipientId) {
-      convo.id = message.conversationId;
-      convo.messages.push(message);
-      convo.latestMessageText = message.text;
-      return convo;
+      const convoCopy = { ...convo };
+      convo.messages = [...convoCopy.messages, message];
+      convoCopy.id = message.conversationId;
+      convoCopy.latestMessageText = message.text;
+      return convoCopy;
     } else {
       return convo;
     }
