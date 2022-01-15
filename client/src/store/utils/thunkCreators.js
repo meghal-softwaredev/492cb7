@@ -95,7 +95,6 @@ const sendMessage = (data, body) => {
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
   try {
-    // add async await as saveMessage() returns promise
     const data = await saveMessage(body);
 
     if (!body.conversationId) {
