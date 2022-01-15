@@ -18,7 +18,7 @@ router.get("/", async (req, res, next) => {
           user2Id: userId,
         },
       },
-      attributes: ["id"],
+      attributes: ["id", "unread"],
       order: [[Message, "createdAt", "DESC"]],
       include: [
         { model: Message, order: ["createdAt", "ASC"] },
@@ -81,6 +81,22 @@ router.get("/", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+router.post("/unread", async (req, res, next) => {
+  try {
+    const { id } = req.body;
+    await Conversation.update({
+      unread: 0
+    },{
+      where: {
+        id: id
+      }
+    })
+  } catch (error) {
+    next(error);
+  }
+  res.status(200).json({"message": "Successfully unread messages is reset"});
 });
 
 module.exports = router;
