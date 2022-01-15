@@ -11,7 +11,6 @@ export const addMessageToStore = (state, payload) => {
     newConvo.latestMessageText = message.text;
     return [newConvo, ...state];
   }
-  // convert from mutable to immutable state to add message
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
       const convoCopy = { ...convo };
@@ -70,7 +69,7 @@ export const addSearchedUsersToStore = (state, users) => {
 
   return newState;
 };
-// convert from mutable to immutable state to add new conversation
+
 export const addNewConvoToStore = (state, recipientId, message) => {
   return state.map((convo) => {
     if (convo.otherUser.id === recipientId) {
