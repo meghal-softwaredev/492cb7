@@ -18,10 +18,10 @@ router.get("/", async (req, res, next) => {
           user2Id: userId,
         },
       },
-      attributes: ["id", "unread"],
+      attributes: ["id", "unread", "lastUnseenCount"],
       order: [[Message, "createdAt", "DESC"]],
       include: [
-        { model: Message, order: ["createdAt", "ASC"] },
+        { model: Message, order: ["createdAt", "DESC"] },
         {
           model: User,
           as: "user1",
@@ -83,11 +83,12 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/unread", async (req, res, next) => {
+router.put("/unread", async (req, res, next) => {
   try {
     const { id } = req.body;
-    await Conversation.update({
-      unread: 0
+    const conversation = await Conversation.update({
+      unread: 0,
+      lastUnseenCount: 0
     },{
       where: {
         id: id
@@ -96,6 +97,7 @@ router.post("/unread", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  
   res.status(200).json({"message": "Successfully unread messages is reset"});
 });
 

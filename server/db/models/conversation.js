@@ -9,6 +9,11 @@ const Conversation = db.define("conversation", {
     allowNull: false,
     defaultValue: 0,
   },
+  lastUnseenCount: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  }
 });
 
 // find conversation given two user Ids
