@@ -121,7 +121,7 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 
 export const resetUnread = (conversation) => async (dispatch) => {
   try {
-    await axios.post("/api/conversations/unread", conversation);
+    await axios.put("/api/conversations/unread", conversation);
     dispatch(resetUnreadMessages(conversation.id));
   } catch (error) {
     console.error(error);

@@ -21,8 +21,8 @@ socket.on("connect", () => {
     store.dispatch(removeOfflineUser(id));
   });
   socket.on("new-message", (data) => {
-    const unread = true;
-    store.dispatch(setNewMessage(data.message, data.sender, unread));
+    const { activeConversation } = store.getState();
+    store.dispatch(setNewMessage(data.message, data.sender, activeConversation));
     fetchConversations();
   });
 });
