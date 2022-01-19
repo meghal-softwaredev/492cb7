@@ -22,16 +22,19 @@ const useStyles = makeStyles((theme) => ({
 
 const Chat = (props) => {
   const classes = useStyles();
-  const { conversation } = props;
+  const { conversation, user } = props;
   const { otherUser } = conversation;
 
-  const handleClick = async (conversation) => {
+  const handleClick = async (conversation, user) => {
     await props.setActiveChat(conversation.otherUser.username);
-    await props.resetUnread(conversation);
+    const lastMessage = conversation.messages && conversation.messages.slice(-1);
+    if (lastMessage[0] && lastMessage[0].senderId !== user.id){
+      await props.resetUnread(conversation);
+    }
   };
 
   return (
-    <Box onClick={() => handleClick(conversation)} className={classes.root}>
+    <Box onClick={() => handleClick(conversation, user)} className={classes.root}>
       <BadgeAvatar
         photoUrl={otherUser.photoUrl}
         username={otherUser.username}
