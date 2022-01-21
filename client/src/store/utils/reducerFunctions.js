@@ -24,9 +24,6 @@ export const addMessageToStore = (state, payload) => {
       if (typeof activeConversation === "undefined") {
         convoCopy.lastUnseenCount = convo.lastUnseenCount + 1;
       }
-      if (typeof activeConversation !== "undefined" && activeConversation === convo.otherUser.username) {
-        convoCopy.lastUnseenCount = convo.lastUnseenCount - 1;
-      }
       return convoCopy;
     } else {
       return convo;
@@ -92,11 +89,23 @@ export const addNewConvoToStore = (state, recipientId, message) => {
   });
 };
 
-export const resetMessages = (state, conversationId) => {
+export const resetUnreadMessages = (state, conversationId) => {
   return state.map((convo) => { 
     if (convo.id === conversationId) {
       const convoCopy = { ...convo };
       convoCopy.unread = 0;
+      return convoCopy;
+    } else {
+      return convo;
+    }
+  });
+}
+
+export const resetUnseenCount = (state, conversationId) => {
+  return state.map((convo) => { 
+    if (convo.id === conversationId) {
+      const convoCopy = { ...convo };
+      convoCopy.lastUnseenCount = 0;
       return convoCopy;
     } else {
       return convo;

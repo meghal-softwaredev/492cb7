@@ -5,7 +5,8 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
-  resetUnreadMessages
+  resetUnreadMessagesStatus,
+  updateUnseenCountStatus
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -119,11 +120,22 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   }
 };
 
-export const resetUnread = (conversation) => async (dispatch) => {
+export const updateReadStatus = async (conversation) => {
+  const { data } = await axios.put("/api/conversations/unread", conversation);
+  return data;
+};
+
+export const resetUnreadCount = (conversation) => async (dispatch) => {
   try {
-    await axios.put("/api/conversations/unread", conversation);
-    dispatch(resetUnreadMessages(conversation.id));
+    const data = await updateReadStatus(conversation);
+    dispatch(updateUnseenCountStatus(conversation.id));
+    dispatch(resetUnreadMessagesStatus(conversation.id));
+    updateUnreadMessagesStatus(data.conversation.id);
   } catch (error) {
     console.error(error);
   }
 };
+
+export const updateUnreadMessagesStatus = (data) => {
+  socket.emit("update-unread-status", data);
+}
