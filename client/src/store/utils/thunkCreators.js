@@ -6,7 +6,6 @@ import {
   setNewMessage,
   setSearchedUsers,
   resetUnreadMessagesStatus,
-  updateUnseenCountStatus
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -128,7 +127,6 @@ export const updateReadStatus = async (conversation) => {
 export const resetUnreadCount = (conversation) => async (dispatch) => {
   try {
     const data = await updateReadStatus(conversation);
-    dispatch(updateUnseenCountStatus(conversation.id));
     dispatch(resetUnreadMessagesStatus(conversation.id));
     updateUnreadMessagesStatus(data.conversation.id);
   } catch (error) {

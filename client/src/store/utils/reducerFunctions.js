@@ -94,6 +94,7 @@ export const resetUnreadMessages = (state, conversationId) => {
     if (convo.id === conversationId) {
       const convoCopy = { ...convo };
       convoCopy.unread = 0;
+      convoCopy.lastUnseenCount = 0;
       return convoCopy;
     } else {
       return convo;

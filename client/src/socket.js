@@ -30,7 +30,6 @@ socket.on("connect", () => {
     const conversation = conversations.find(convo => activeConversation === convo.otherUser.username);
     if (conversation) {
       const data = await updateReadStatus(conversation);
-      store.dispatch(updateUnseenCountStatus(conversation.id));
       store.dispatch(resetUnreadMessagesStatus(conversation.id));
       updateUnreadMessagesStatus(data.conversation.id);
     }
