@@ -86,7 +86,7 @@ router.get("/", async (req, res, next) => {
 router.put("/unread", async (req, res, next) => {
   try {
     const { id } = req.body;
-    const conversation = await Conversation.update({
+    await Conversation.update({
       unread: 0,
       lastUnseenCount: 0
     },{
@@ -94,11 +94,17 @@ router.put("/unread", async (req, res, next) => {
         id: id
       }
     })
+  
+    const conversation = await Conversation.findOne(
+    { 
+      where:{ 
+        id: id
+      }
+    })
+    res.status(200).json({conversation: conversation});
   } catch (error) {
     next(error);
   }
-  
-  res.status(200).json({"message": "Successfully unread messages is reset"});
 });
 
 module.exports = router;
