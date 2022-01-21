@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
 import { resetUnreadCount } from "../../store/utils/thunkCreators";
 import { connect } from "react-redux";
+import { messageStatus } from '../../store/helpers'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,23 +26,25 @@ const Chat = (props) => {
   const { conversation, user } = props;
   const { otherUser } = conversation;
 
-  const handleClick = async (conversation, user) => {
+  const lastMessageStatus = messageStatus(user, conversation);
+ 
+  const handleClick = async () => {
     await props.setActiveChat(conversation.otherUser.username);
-    const lastMessage = conversation.messages && conversation.messages.slice(-1);
-    if (lastMessage[0] && lastMessage[0].senderId !== user.id){
+    if (lastMessageStatus){
       await props.resetUnreadCount(conversation);
     }
   };
 
   return (
-    <Box onClick={() => handleClick(conversation, user)} className={classes.root}>
+    <Box onClick={() => handleClick()} className={classes.root}>
       <BadgeAvatar
         photoUrl={otherUser.photoUrl}
         username={otherUser.username}
         online={otherUser.online}
         sidebar={true}
       />
-      <ChatContent conversation={conversation} />
+      <ChatContent conversation={conversation} 
+       lastMessageStatus = {lastMessageStatus}/>
     </Box>
   );
 };

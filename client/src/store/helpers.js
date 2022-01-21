@@ -8,3 +8,12 @@ export const getLastSeenMessage = (user, conversation) => {
   }
   return lastMessage;
 };
+
+export const messageStatus = (user, conversation) => {
+  const lastMessage = conversation.messages && conversation.messages.slice(-1);
+  let lastMessageStatus;
+  if (conversation.id) {
+   lastMessageStatus = lastMessage && lastMessage[0].senderId !== user.id;
+  }
+  return lastMessageStatus;
+}

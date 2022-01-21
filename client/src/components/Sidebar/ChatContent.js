@@ -28,9 +28,9 @@ const useStyles = makeStyles((theme) => ({
 const ChatContent = (props) => {
   const classes = useStyles();
 
-  const { conversation, activeConversation } = props;
+  const { conversation, activeConversation, lastMessageStatus } = props;
   const { latestMessageText, otherUser, unread } = conversation;
-
+  
   return (
     <Box className={classes.root}>
       <Box>
@@ -41,7 +41,7 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
-      { unread > 0 && activeConversation !== otherUser.username &&
+      { lastMessageStatus && unread > 0 && activeConversation !== otherUser.username &&
          <Chip className={classes.unreadMessage} label={unread}/>
       }
     </Box>
