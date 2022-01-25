@@ -120,7 +120,7 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 };
 
 export const updateReadStatus = async (conversation) => {
-  const { data } = await axios.put("/api/conversations/unread", conversation);
+  const { data } = await axios.put("/api/conversations/reset-unread", conversation);
   return data;
 };
 
@@ -136,4 +136,14 @@ export const resetUnreadCount = (conversation) => async (dispatch) => {
 
 export const updateUnreadMessagesStatus = (data) => {
   socket.emit("update-unread-status", data);
+}
+
+export const updateReadStatusOnMessageArrival = async(convoData) =>  {
+  const { activeConversation, conversations } = convoData;
+  const conversation = conversations.find(convo => activeConversation === convo.otherUser.username);
+  if (conversation) {
+    const data = await updateReadStatus(conversation);
+    updateUnreadMessagesStatus(data.conversation.id);
+    return conversation.id;
+  }
 }

@@ -18,7 +18,7 @@ router.get("/", async (req, res, next) => {
           user2Id: userId,
         },
       },
-      attributes: ["id", "unread", "lastUnseenCount"],
+      attributes: ["id", "unreadBadge", "lastUnseenCount"],
       order: [[Message, "createdAt", "DESC"]],
       include: [
         { model: Message, order: ["createdAt", "DESC"] },
@@ -83,24 +83,22 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.put("/unread", async (req, res, next) => {
+router.put("/reset-unread", async (req, res, next) => {
   try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
     const { id } = req.body;
-    await Conversation.update({
-      unread: 0,
+    const convo = await Conversation.update({
+      unreadBadge: 0,
       lastUnseenCount: 0
     },{
       where: {
         id: id
-      }
+      },
+      returning: true 
     })
-  
-    const conversation = await Conversation.findOne(
-    { 
-      where:{ 
-        id: id
-      }
-    })
+    conversation = convo[1][0].dataValues;
     res.status(200).json({conversation: conversation});
   } catch (error) {
     next(error);
