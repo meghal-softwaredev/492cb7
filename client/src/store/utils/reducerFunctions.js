@@ -7,7 +7,7 @@ export const addMessageToStore = (state, payload) => {
       id: message.conversationId,
       otherUser: sender,
       messages: [message],
-      unread: 1,
+      unreadBadge: 1,
       lastUnseenCount: 1
     };
     newConvo.latestMessageText = message.text;
@@ -19,7 +19,7 @@ export const addMessageToStore = (state, payload) => {
       convoCopy.messages = [...convoCopy.messages, message];
       convoCopy.latestMessageText = message.text;
       if (typeof activeConversation !== "undefined" && activeConversation !== convo.otherUser.username) {
-        convoCopy.unread = convo.unread + 1;
+        convoCopy.unreadBadge = convo.unreadBadge + 1;
       }
       if (typeof activeConversation === "undefined") {
         convoCopy.lastUnseenCount = convo.lastUnseenCount + 1;
@@ -93,7 +93,7 @@ export const resetUnreadMessages = (state, conversationId) => {
   return state.map((convo) => { 
     if (convo.id === conversationId) {
       const convoCopy = { ...convo };
-      convoCopy.unread = 0;
+      convoCopy.unreadBadge = 0;
       convoCopy.lastUnseenCount = 0;
       return convoCopy;
     } else {

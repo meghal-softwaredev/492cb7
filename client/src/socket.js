@@ -8,8 +8,7 @@ import {
   resetUnreadMessagesStatus
 } from "./store/conversations";
 import {
-  updateReadStatus,
-  updateUnreadMessagesStatus
+  updateReadStatusOnMessageArrival
 } from "./store/utils/thunkCreators";
 const socket = io(window.location.origin);
 
@@ -24,14 +23,12 @@ socket.on("connect", () => {
     store.dispatch(removeOfflineUser(id));
   });
 
-  socket.on("new-message", async (data) => {
+  socket.on("new-message", (data) => {
     const { activeConversation, conversations } = store.getState();
     store.dispatch(setNewMessage(data.message, data.sender, activeConversation));
-    const conversation = conversations.find(convo => activeConversation === convo.otherUser.username);
-    if (conversation) {
-      const data = await updateReadStatus(conversation);
-      store.dispatch(resetUnreadMessagesStatus(conversation.id));
-      updateUnreadMessagesStatus(data.conversation.id);
+    const conversationId = updateReadStatusOnMessageArrival({ activeConversation, conversations })
+    if (conversationId) {
+      store.dispatch(resetUnreadMessagesStatus(conversationId));
     }
   });
 

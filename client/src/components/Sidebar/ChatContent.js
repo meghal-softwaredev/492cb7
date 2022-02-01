@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Chip } from "@material-ui/core";
+import { Box, Typography, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 
@@ -20,8 +20,12 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: -0.17,
   },
   unreadMessage: {
-    backgroundColor: "#3A8DFF",
     color: "white",
+    fontWeight: "bold",
+  },
+  unreadLastMessageText: {
+    color:"black",
+    fontWeight: "bold",
   }
 }));
 
@@ -29,7 +33,7 @@ const ChatContent = (props) => {
   const classes = useStyles();
 
   const { conversation, activeConversation, lastMessageStatus } = props;
-  const { latestMessageText, otherUser, unread } = conversation;
+  const { latestMessageText, otherUser, unreadBadge } = conversation;
   
   return (
     <Box className={classes.root}>
@@ -37,12 +41,14 @@ const ChatContent = (props) => {
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={classes.previewText}>
+        <Typography className={unreadBadge > 0 ? `${classes.previewText} ${classes.unreadLastMessageText}` : `${classes.previewText}`}>
           {latestMessageText}
         </Typography>
       </Box>
-      { lastMessageStatus && unread > 0 && activeConversation !== otherUser.username &&
-         <Chip className={classes.unreadMessage} label={unread}/>
+      { lastMessageStatus && unreadBadge > 0 && activeConversation !== otherUser.username &&
+      <Box mr={3} mt={1}>
+         <Badge badgeContent={unreadBadge} color="primary" />
+      </Box>
       }
     </Box>
   );

@@ -3,8 +3,10 @@ const Sequelize = require("sequelize");
 const db = require("../db");
 const Message = require("./message");
 
+//unreadBadge attribute is for showing unread messages in side bar and lastUnseenCount attribute is to show avatar below last read message
+ 
 const Conversation = db.define("conversation", {
-  unread: {
+  unreadBadge: {
     type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0,
@@ -13,7 +15,7 @@ const Conversation = db.define("conversation", {
     type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0
-  }
+  },
 });
 
 // find conversation given two user Ids

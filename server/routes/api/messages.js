@@ -19,7 +19,7 @@ router.post("/", async (req, res, next) => {
     // if we already know conversation id, we can save time and just add it to message and return
     if (conversationId) {
       await Conversation.update({ 
-        unread: conversation.unread + 1,
+        unreadBadge: conversation.unreadBadge + 1,
         lastUnseenCount: conversation.lastUnseenCount + 1
       },
       { 
@@ -36,7 +36,7 @@ router.post("/", async (req, res, next) => {
       conversation = await Conversation.create({
         user1Id: senderId,
         user2Id: recipientId,
-        unread: 1,
+        unreadBadge: 1,
         lastUnseenCount: 1
       });
       if (onlineUsers.includes(sender.id)) {
