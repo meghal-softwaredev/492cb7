@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
 import { connect } from "react-redux";
+import { getLastSeenMessage } from '../../store/helpers'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -22,9 +23,11 @@ const useStyles = makeStyles(() => ({
 
 const ActiveChat = (props) => {
   const classes = useStyles();
-  const { user } = props;
+  const { user, activeConversation } = props;
   const conversation = props.conversation || {};
 
+  const lastMessage = getLastSeenMessage(user, conversation);
+  
   return (
     <Box className={classes.root}>
       {conversation.otherUser && (
@@ -37,12 +40,15 @@ const ActiveChat = (props) => {
             <Messages
               messages={conversation.messages}
               otherUser={conversation.otherUser}
-              user={user.id}
+              userId={user.id}
+              lastMessage={lastMessage.length > 0 && lastMessage[0]}
+              activeConversation={activeConversation}
             />
             <Input
               otherUser={conversation.otherUser}
               conversationId={conversation.id}
               user={user}
+              activeConversation={activeConversation}
             />
           </Box>
         </>
@@ -54,6 +60,7 @@ const ActiveChat = (props) => {
 const mapStateToProps = (state) => {
   return {
     user: state.user,
+    activeConversation: state.activeConversation,
     conversation:
       state.conversations &&
       state.conversations.find(

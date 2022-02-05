@@ -3,7 +3,9 @@ import { Box } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
+import { resetUnreadCount } from "../../store/utils/thunkCreators";
 import { connect } from "react-redux";
+import { messageStatus } from '../../store/helpers'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,22 +23,28 @@ const useStyles = makeStyles((theme) => ({
 
 const Chat = (props) => {
   const classes = useStyles();
-  const { conversation } = props;
+  const { conversation, user } = props;
   const { otherUser } = conversation;
 
-  const handleClick = async (conversation) => {
+  const lastMessageStatus = messageStatus(user, conversation);
+ 
+  const handleClick = async () => {
     await props.setActiveChat(conversation.otherUser.username);
+    if (lastMessageStatus){
+      await props.resetUnreadCount(conversation);
+    }
   };
 
   return (
-    <Box onClick={() => handleClick(conversation)} className={classes.root}>
+    <Box onClick={() => handleClick()} className={classes.root}>
       <BadgeAvatar
         photoUrl={otherUser.photoUrl}
         username={otherUser.username}
         online={otherUser.online}
         sidebar={true}
       />
-      <ChatContent conversation={conversation} />
+      <ChatContent conversation={conversation} 
+       lastMessageStatus = {lastMessageStatus}/>
     </Box>
   );
 };
@@ -45,7 +53,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
-    }
+    },
+    resetUnreadCount: (conversation) => {
+      dispatch(resetUnreadCount(conversation));
+    },
   };
 };
 
